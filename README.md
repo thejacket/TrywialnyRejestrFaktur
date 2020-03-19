@@ -22,6 +22,6 @@ Contains Vaadin server-side views (combines  view arrangement and web controller
 
 Contains css styles for Vaadin layouts
 
-###TODO:
+### TODO:
 * Implement transforming of XSL-FO documents to PDF format
 * Employ tests
