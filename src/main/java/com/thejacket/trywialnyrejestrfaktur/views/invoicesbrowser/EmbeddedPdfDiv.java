@@ -1,6 +1,7 @@
 package com.thejacket.trywialnyrejestrfaktur.views.invoicesbrowser;
 
 import com.thejacket.trywialnyrejestrfaktur.backend.EmbeddedPdfDocument;
+import com.thejacket.trywialnyrejestrfaktur.utils.StreamResourceUtility;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.router.*;
@@ -19,35 +20,27 @@ import java.util.Random;
 @Route("testPdf")
 public class EmbeddedPdfDiv extends Div {
 
-    private EmbeddedPdfDocument pdfFile;
+    private EmbeddedPdfDocument pdfDocument;
 
-    public EmbeddedPdfDiv(){
-        pdfFile = new EmbeddedPdfDocument("");
-        add(pdfFile);
+    protected EmbeddedPdfDiv(){
+        pdfDocument = new EmbeddedPdfDocument("");
+        add(pdfDocument);
     }
 
-    private InputStream getPdfInputStream(String pdfPath) throws FileNotFoundException {
-        return new FileInputStream(pdfPath);
-    }
 
-    public void setPdfDataAttribute(String pdfPath, String invoiceNumber) {
-        StreamResource resource = new StreamResource(FilenameUtils.getName(pdfPath),
-                        () -> {
-                            try {
-                                return getPdfInputStream(pdfPath);
-                            } catch (FileNotFoundException e) {
-                                // return empty array, will be displayed as could not load
-                                return new ByteArrayInputStream(new byte[]{});
-                            }
-                        });
+    protected void setPdfDataAttribute(String pdfPath, String invoiceNumber) {
+        StreamResource resource = StreamResourceUtility.StreamResourceMaker(pdfPath);
+
         Random random = new Random();
         int i = random.nextInt(10);
         // 20% chance of showing a notification instead of resource
         if (i + 10 > 12) {
-            pdfFile.setEmbeddedPdfDivDataAttribute(resource);
+            pdfDocument.setEmbeddedPdfDivDataAttribute(resource);
             setHeight("100%");
         } else {
             Notification.show(String.format("Nie masz wymaganych uprawnień do wyświetlenia treści faktury %s", invoiceNumber));
         }
+
+
     }
 }
